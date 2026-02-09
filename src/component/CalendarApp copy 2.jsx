@@ -574,7 +574,22 @@ const addEvent = async () => {
                   <PanchangCalendar />
             </div>
 
-            
+            {/* Calendar Grid */}
+            <div className="bg-red-900/20 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-yellow-300/20">
+              {/* Day Headers */}
+              <div className="grid grid-cols-7 bg-gradient-to-r from-red-700 to-yellow-600">
+                {dayNames.map(day => (
+                  <div key={day} className="p-4 text-center text-white font-bold text-lg">
+                    {day}
+                  </div>
+                ))}
+              </div>
+
+              {/* Calendar Days */}
+              <div className="grid grid-cols-7 bg-red-900/10">
+                {renderCalendarDays()}
+              </div>
+            </div>
           </div>
 
 

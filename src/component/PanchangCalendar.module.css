@@ -1,0 +1,79 @@
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border: 4px solid #b00000;
+  background: #fff;
+}
+
+.dayHeader {
+  background: #fff2c6;
+  color: #b00000;
+  font-weight: 800;
+  text-align: center;
+  padding: 6px;
+  border: 1px solid #b00000;
+}
+
+.emptyCell {
+  height: 130px;
+  border: 1px solid #b00000;
+}
+
+.dateCell {
+  position: relative;
+  height: 130px;
+  border: 1px solid #b00000;
+  background: #fff;
+}
+
+/* Date top-left */
+.dateTopLeft {
+  position: absolute;
+  top: 0px;
+  left: 6px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #b00000;
+}
+
+/* Center big date */
+.mainDate {
+  font-size: 40px;
+  font-weight: 900;
+  color: #d00000;
+  text-align: center;
+  margin-top: 30px;
+}
+
+/* Panchang sides */
+.sideLeft {
+  position: absolute;
+  left: 2px;
+  top: 22px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 11px;
+  color: #000;
+}
+
+.sideRight {
+  position: absolute;
+  right: 2px;
+  top: 22px;
+  writing-mode: vertical-rl;
+  font-size: 11px;
+  color: #000;
+}
+
+/* Festival */
+.eventBadge {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #d00000;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
