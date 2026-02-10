@@ -33,16 +33,30 @@ export default function PanchangCalendar() {
       const url = `${config.apiBaseUrl}/events`;
       const response = await fetch(url);
       const resJson = await response.json();
+      console.log(resJson);
 
       // Group events by YYYY-MM-DD
       const map = {};
-      resJson?.data?.events?.forEach((ev) => {
-        if (!ev.start_time || ev.start_time === "0000-00-00 00:00:00") return;
+      const payload = resJson?.data;
 
-        const dateKey = ev.start_time.split(" ")[0];
-        if (!map[dateKey]) map[dateKey] = [];
-        map[dateKey].push(ev);
-      });
+      // Case 1: API returns { data: { "YYYY-MM-DD": [events...] } }
+      if (payload && typeof payload === "object" && !Array.isArray(payload) && !payload.events) {
+        Object.entries(payload).forEach(([dateKey, list]) => {
+          if (!Array.isArray(list)) return;
+          if (!map[dateKey]) map[dateKey] = [];
+          list.forEach((ev) => map[dateKey].push(ev));
+        });
+      }
+
+      // Case 2: API returns { data: { events: [ ... ] } }
+      if (Array.isArray(payload?.events)) {
+        payload.events.forEach((ev) => {
+          if (!ev.start_time || ev.start_time === "0000-00-00 00:00:00") return;
+          const dateKey = ev.start_time.split(" ")[0];
+          if (!map[dateKey]) map[dateKey] = [];
+          map[dateKey].push(ev);
+        });
+      }
 
       setEvents(map);
     };
@@ -83,26 +97,26 @@ export default function PanchangCalendar() {
   };
 
   return (
-    <div className="bg-[#ffd200] p-4">
+    <div className=" p-4">
       {/* Month / Year Selector */}
       <div className="flex justify-center gap-4 mb-4">
         <select
           value={month}
           onChange={(e) => setMonth(+e.target.value)}
-          className="border border-red-700 px-3 py-1"
+          className="border border-yellow-600 px-3 py-1 text-white"
         >
           {monthsHindi.map((m, i) => (
-            <option key={i} value={i}>{m}</option>
+            <option className="text-red-900" key={i} value={i}>{m}</option>
           ))}
         </select>
 
         <select
           value={year}
           onChange={(e) => setYear(+e.target.value)}
-          className="border border-red-700 px-3 py-1"
+          className="border border-yellow-600 px-3 py-1 text-white"
         >
           {[2024, 2025, 2026, 2027].map((y) => (
-            <option key={y} value={y}>{y}</option>
+            <option className="text-red-900" key={y} value={y}>{y}</option>
           ))}
         </select>
       </div>
@@ -128,7 +142,8 @@ export default function PanchangCalendar() {
               onClick={() => dayEvents.length && openPopup(dateKey)}
             >
               {/* Date number */}
-              <div className={styles.dateTopLeft}>{cell.date}</div>
+              {/* <div className={styles.dateTopLeft}>{cell.date}</div> */}
+              <div className={styles.mainDate}>{cell.date}</div>
 
               {/* Events inside cell */}
               <div className={styles.eventsContainer}>
@@ -141,6 +156,7 @@ export default function PanchangCalendar() {
                     {ev.title}
                   </div>
                 ))}
+        
 
                 {dayEvents.length > 2 && (
                   <div className={styles.moreEvents}>
@@ -169,7 +185,7 @@ export default function PanchangCalendar() {
               <div key={ev.id} className={styles.modalEvent}>
                 <div className="font-semibold">{ev.title}</div>
                 <div className="text-sm">{ev.location}</div>
-                <div className="text-xs">{ev.start_time}</div>
+                <div className="text-xs">{ev.start_time || ev.time || ""}</div>
               </div>
             ))}
 
